@@ -14,7 +14,7 @@ token = query_params.get("token", "")
 if token != "rahasia123":
     st.error("⛔ Akses Ditolak!")
     st.warning("Aplikasi ini hanya dapat diakses melalui artikel resmi di blog kami.")
-    st.markdown(f"[Klik di sini untuk membaca di Blog](https://www.denip.my.id/p/analisa-saham.html)")
+    st.markdown(f"[Klik di sini untuk membaca di Blog](https://www.denip.my.id/p/data-kependudukan.html)")
     st.stop() # Hentikan eksekusi script agar data tidak tampil
 
 # Konfigurasi Halaman Streamlit
