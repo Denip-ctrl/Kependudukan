@@ -184,6 +184,21 @@ else:
           legend=dict(
               orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
           ),
+          # Catatan / Sumber Data di sudut kiri bawah
+            annotations=[
+                dict(
+                    text="Sumber Data: Badan Pusat Statistik (BPS) Indonesia, diolah kembali.<br>Source: BPS (diakses pada 2026).",
+                    xref="paper",
+                    yref="paper",
+                    x=0,          # Posisi rata kiri
+                    y=-0.22,      # Posisi di bawah sumbu X (kiri bawah)
+                    showarrow=False,
+                    font=dict(size=10, color="gray"),
+                    align="left"
+                )
+            ],
+            # Menambah margin bawah agar teks sumber data tidak terpotong
+            margin=dict(b=90)
       )
 
       st.plotly_chart(fig, use_container_width=True)
