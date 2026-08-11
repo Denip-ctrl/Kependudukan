@@ -27,9 +27,15 @@ def load_and_combine_data(data_folder="data"):
   for file_path in files:
     file_name = os.path.basename(file_path)
 
-    # 1. Baca file
+    # 1. BACA FILE (Mendukung pemisah koma maupun titik koma)
     if file_path.endswith(".csv"):
-      df = pd.read_csv(file_path)
+      try:
+        df = pd.read_csv(file_path)
+        # Jika kolom cuma 1, kemungkinan delimiter-nya titik koma (;)
+        if len(df.columns) <= 1:
+          df = pd.read_csv(file_path, sep=";")
+      except Exception:
+        df = pd.read_csv(file_path, sep=";")
     elif file_path.endswith(".parquet"):
       df = pd.read_parquet(file_path)
     else:
@@ -48,21 +54,19 @@ def load_and_combine_data(data_folder="data"):
     if not prov_col:
       continue
 
-    # Clean isi kolom provinsi (hilangkan spasi berlebih)
+    # Clean isi kolom provinsi
     df[prov_col] = df[prov_col].astype(str).str.strip()
 
-    # 2. POTONG BARIS: Cari baris "Indonesia" dan buang baris tersebut beserta seluruh baris sesudahnya
-    # Menggunakan regex case-insensitive untuk mengantisipasi "INDONESIA" atau "Indonesia"
+    # 2. POTONG BARIS "Indonesia" DAN SESUDAHNYA
     idx_indonesia = df[
         df[prov_col].str.contains(r"^indonesia$", case=False, na=False)
     ].index
 
     if not idx_indonesia.empty:
       first_idx = idx_indonesia[0]
-      # Ambil baris hanya dari awal sampai SEBELUM baris 'Indonesia'
       df = df.iloc[:first_idx].copy()
 
-    # 3. Cek/Tambahkan Kolom 'Tahun' dari nama file jika belum ada
+    # 3. KELOLA KOLOM TAHUN
     if "Tahun" not in df.columns:
       match = re.search(r"\b(19|20)\d{2}\b", file_name)
       if match:
@@ -70,20 +74,30 @@ def load_and_combine_data(data_folder="data"):
       else:
         continue
 
-    # Simpan nama kolom provinsi asli sebagai acuan standar
     df = df.rename(columns={prov_col: "Provinsi"})
+
+    # 4. KONVERSI SEMUA KOLOM LAIN MENJADI ANGKA (NUMERIC)
+    for col in df.columns:
+      if col not in ["Provinsi", "Tahun"]:
+        # Ubah ke string dulu
+        s = df[col].astype(str).str.strip()
+
+        # Hilangkan pemisah ribuan (titik) dan ubah koma desimal menjadi titik
+        # Contoh: "1.234,56" -> "1234.56"
+        s = s.str.replace(".", "", regex=False).str.replace(",", ".", regex=False)
+
+        # Ubah teks non-angka (seperti "-", "N/A", "...") menjadi NaN lalu ubah ke float
+        df[col] = pd.to_numeric(s, errors="coerce")
 
     list_df.append(df)
 
   if list_df:
-    # Gabungkan semua data (otomatis menangani jika ada provinsi yang baru muncul di tahun tertentu)
     master_df = pd.concat(list_df, ignore_index=True)
     master_df["Tahun"] = pd.to_numeric(master_df["Tahun"], errors="coerce")
     master_df = master_df.sort_values(by="Tahun")
     return master_df
 
   return None
-
 
 # --- APLIKASI UTAMA ---
 st.title("📊 Dashboard Tren Kependudukan Antar Tahun")
