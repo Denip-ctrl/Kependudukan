@@ -27,11 +27,10 @@ def load_and_combine_data(data_folder="data"):
   for file_path in files:
     file_name = os.path.basename(file_path)
 
-    # 1. BACA FILE (Mendukung pemisah koma maupun titik koma)
+    # 1. BACA FILE
     if file_path.endswith(".csv"):
       try:
         df = pd.read_csv(file_path)
-        # Jika kolom cuma 1, kemungkinan delimiter-nya titik koma (;)
         if len(df.columns) <= 1:
           df = pd.read_csv(file_path, sep=";")
       except Exception:
@@ -76,18 +75,35 @@ def load_and_combine_data(data_folder="data"):
 
     df = df.rename(columns={prov_col: "Provinsi"})
 
-    # 4. KONVERSI SEMUA KOLOM LAIN MENJADI ANGKA (NUMERIC)
+    # 4. KONVERSI DAN NORMALISASI SKALA ANGKA
     for col in df.columns:
       if col not in ["Provinsi", "Tahun"]:
-        # Ubah ke string dulu
+        # Konversi ke string & hapus spasi
         s = df[col].astype(str).str.strip()
 
-        # Hilangkan pemisah ribuan (titik) dan ubah koma desimal menjadi titik
-        # Contoh: "1.234,56" -> "1234.56"
-        s = s.str.replace(".", "", regex=False).str.replace(",", ".", regex=False)
+        # Jika format angka menggunakan koma sebagai desimal (misal 1,4 atau 106,0)
+        # Ganti koma dengan titik
+        s = s.str.replace(",", ".", regex=False)
 
-        # Ubah teks non-angka (seperti "-", "N/A", "...") menjadi NaN lalu ubah ke float
-        df[col] = pd.to_numeric(s, errors="coerce")
+        # Ubah ke numerik
+        numeric_s = pd.to_numeric(s, errors="coerce")
+
+        # LOGIKA NORMALISASI SKALA BPS:
+        col_lower = col.lower()
+
+        # A. Laju Pertumbuhan / Persentase Penduduk (misal: 140 -> 1.4, 160 -> 16.0)
+        if "pertumbuhan" in col_lower or "persentase" in col_lower or "%" in col:
+          # Jika rata-rata nilainya di atas 10, kemungkinan besar skala terkalikan 100
+          if numeric_s.dropna().mean() > 10:
+            numeric_s = numeric_s / 100.0
+
+        # B. Rasio Jenis Kelamin (misal: 1060 -> 106.0)
+        elif "rasio" in col_lower or "kelamin" in col_lower:
+          # Jika nilainya di atas 500, terkalikan 10
+          if numeric_s.dropna().mean() > 500:
+            numeric_s = numeric_s / 10.0
+
+        df[col] = numeric_s
 
     list_df.append(df)
 
