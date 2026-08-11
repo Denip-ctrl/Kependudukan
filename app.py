@@ -5,7 +5,83 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+import streamlit as st
 
+# 1. Konfigurasi Halaman Wajib di Paling Atas
+st.set_page_config(
+    page_title="Dashboard Kependudukan - Prospek Indonesia",
+    layout="wide"
+)
+
+# ==============================================================================
+# CSS KUSTOM: KETERANGAN & TOMBOL KEMBALI KE BLOG "PROSPEK INDONESIA"
+# ==============================================================================
+st.markdown("""
+    <style>
+    /* Styling Banner Navigasi Kembali */
+    .blog-nav-container {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border: 1px solid #334155;
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .blog-nav-text {
+        color: #f8fafc;
+        font-size: 14px;
+        margin: 0;
+        line-height: 1.5;
+    }
+    .blog-nav-text strong {
+        color: #38bdf8;
+        font-size: 16px;
+    }
+    .blog-nav-button {
+        background-color: #2563eb;
+        color: #ffffff !important;
+        padding: 10px 20px;
+        text-decoration: none !important;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        border: none;
+    }
+    .blog-nav-button:hover {
+        background-color: #1d4ed8;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Render Komponen Navigasi Kembali ke Blog
+st.markdown("""
+    <div class="blog-nav-container">
+        <div class="blog-nav-text">
+            💡 <strong>Bagian dari Analisis Ekonomi & Prospek Indonesia</strong><br>
+            Untuk membaca artikel lengkap, ulasan metodologi, dan grafik analisis lainnya, silakan kembali ke blog.
+        </div>
+        <a href="https://www.denip.my.id" target="_top" class="blog-nav-button">
+            ⬅️ Kembali ke Blog Prospek Indonesia
+        </a>
+    </div>
+""", unsafe_allow_html=True)
+
+# ==============================================================================
+# KODE APLIKASI UTAMA ANDA DI BAWAH INI
+# ==============================================================================
+# st.title("Dashboard Data Kependudukan Indonesia")
+# df = load_data() ...
 
 # Konfigurasi Halaman Streamlit
 st.set_page_config(
