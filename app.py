@@ -6,16 +6,6 @@ import plotly.express as px
 import streamlit as st
 
 
-# Cek parameter kunci di URL (misal: ?token=rahasia123)
-query_params = st.query_params
-token = query_params.get("token", "")
-
-# Cek apakah akses berasal dari blog kamu
-if token != "rahasia123":
-    st.error("⛔ Akses Ditolak!")
-    st.warning("Aplikasi ini hanya dapat diakses melalui artikel resmi di blog kami.")
-    st.markdown(f"[Klik di sini untuk membaca di Blog](https://www.denip.my.id/p/data-kependudukan.html)")
-    st.stop() # Hentikan eksekusi script agar data tidak tampil
 
 # Konfigurasi Halaman Streamlit
 st.set_page_config(
