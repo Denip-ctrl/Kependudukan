@@ -5,7 +5,6 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-import streamlit as st
 
 # Cek parameter kunci di URL (misal: ?token=rahasia123)
 query_params = st.query_params
