@@ -160,7 +160,7 @@ else:
           color="Provinsi",
           markers=True,
           title=f"Tren {selected_metric} per Provinsi",
-          labels={"Tahun": "Tahun", selected_metric: },
+          # labels={"Tahun": "Tahun", selected_metric: selected_metric},
       )
 
       fig.update_layout(
