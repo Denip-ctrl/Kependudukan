@@ -71,7 +71,7 @@ st.markdown("""
             💡 <strong>Bagian dari Analisis Ekonomi & Prospek Indonesia</strong><br>
             Untuk membaca artikel lengkap, ulasan metodologi, dan grafik analisis lainnya, silakan kembali ke blog.
         </div>
-        <a href="https://www.denip.my.id" target="_top" class="blog-nav-button">
+        <a href="https://www.denip.my.id" target="blank" class="blog-nav-button">
             ⬅️ Kembali ke Blog Prospek Indonesia
         </a>
     </div>
